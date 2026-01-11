@@ -140,14 +140,15 @@ console.log('\n测试 7: 性能测试');
 console.log('-------------------');
 try {
     // 生成较大的测试文本 (约 10,000 字)
-    let largeText = '';
+    const parts = [];
     for (let i = 1; i <= 50; i++) {
-        largeText += `第${i}章 章节${i}\n\n`;
+        parts.push(`第${i}章 章节${i}\n\n`);
         for (let j = 0; j < 20; j++) {
-            largeText += `这是第${i}章的第${j + 1}段内容。包含一些测试文字来模拟真实的电子书内容。\n`;
+            parts.push(`这是第${i}章的第${j + 1}段内容。包含一些测试文字来模拟真实的电子书内容。\n`);
         }
-        largeText += '\n';
+        parts.push('\n');
     }
+    const largeText = parts.join('');
     
     const startTime = Date.now();
     const result = convertEbook(largeText, 'txt', 'html', {

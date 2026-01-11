@@ -170,7 +170,7 @@ export function markdownToHtml(markdown, metadata = {}) {
  * @param {string} text - 需要转义的文本
  * @returns {string} 转义后的文本
  */
-function escapeHtml(text) {
+export function escapeHtml(text) {
     const map = {
         '&': '&amp;',
         '<': '&lt;',

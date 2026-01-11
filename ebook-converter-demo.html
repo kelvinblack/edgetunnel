@@ -301,11 +301,7 @@
                 lastResult = result;
                 
                 // 显示结果
-                if (toFormat === 'json') {
-                    output.innerHTML = `<pre>${escapeHtml(JSON.stringify(JSON.parse(result), null, 2))}</pre>`;
-                } else {
-                    output.innerHTML = `<pre>${escapeHtml(result)}</pre>`;
-                }
+                output.innerHTML = `<pre>${escapeHtml(result)}</pre>`;
                 
                 // 显示统计信息
                 document.getElementById('time').textContent = (endTime - startTime).toFixed(2) + ' ms';
