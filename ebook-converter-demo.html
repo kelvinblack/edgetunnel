@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子书转换器演示 - E-book Converter Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .answer-box {
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+        }
+        
+        .answer-box h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .panel {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .panel h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .controls {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        select, input {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .output {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow: auto;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+        }
+        
+        .stats {
+            background: #e8f4f8;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .stats div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .stats .label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .stats .value {
+            color: #667eea;
+        }
+        
+        .example-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .example-buttons button {
+            flex: 1;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 电子书转换器演示</h1>
+            <p>E-book Converter Demo</p>
+        </div>
+        
+        <div class="answer-box">
+            <h2>❓ 制作一个电子书转换的程序需要耗费很多资源吗？</h2>
+            <p><strong>✅ 答案：不需要！</strong></p>
+            <p>如本演示所示，一个基础的电子书转换程序可以非常轻量级：</p>
+            <ul style="margin: 10px 0 10px 20px; line-height: 1.8;">
+                <li>无需额外的依赖库</li>
+                <li>代码少于 200 行</li>
+                <li>转换速度极快 (通常 &lt; 10ms)</li>
+                <li>内存占用极小</li>
+                <li>可在浏览器中直接运行</li>
+            </ul>
+        </div>
+        
+        <div class="content">
+            <div class="panel">
+                <h3>📝 输入内容</h3>
+                
+                <div class="example-buttons">
+                    <button onclick="loadExample('txt')">TXT 示例</button>
+                    <button onclick="loadExample('md')">Markdown 示例</button>
+                </div>
+                
+                <textarea id="input" placeholder="在此输入文本或 Markdown 内容...">第一章 开始
+
+这是一个简单的电子书转换示例。
+本工具展示了电子书转换不需要大量资源。
+
+第二章 功能
+
+- 支持 TXT 转 HTML
+- 支持 TXT 转 JSON
+- 支持 Markdown 转 HTML
+
+第三章 总结
+
+电子书转换是一个轻量级操作！</textarea>
+                
+                <div class="controls">
+                    <select id="fromFormat">
+                        <option value="txt">TXT</option>
+                        <option value="md">Markdown</option>
+                    </select>
+                    
+                    <span style="padding: 10px;">→</span>
+                    
+                    <select id="toFormat">
+                        <option value="html">HTML</option>
+                        <option value="json">JSON</option>
+                    </select>
+                    
+                    <input type="text" id="title" placeholder="标题" value="我的电子书">
+                    <input type="text" id="author" placeholder="作者" value="匿名">
+                    
+                    <button onclick="convert()">🔄 转换</button>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h3>📤 输出结果</h3>
+                <div class="output" id="output">
+                    <p style="color: #999; text-align: center; margin-top: 80px;">
+                        点击"转换"按钮查看结果
+                    </p>
+                </div>
+                
+                <div class="stats" id="stats" style="display: none;">
+                    <div>
+                        <span class="label">转换耗时:</span>
+                        <span class="value" id="time">-</span>
+                    </div>
+                    <div>
+                        <span class="label">输入大小:</span>
+                        <span class="value" id="inputSize">-</span>
+                    </div>
+                    <div>
+                        <span class="label">输出大小:</span>
+                        <span class="value" id="outputSize">-</span>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button onclick="downloadResult()">💾 下载结果</button>
+                    <button onclick="copyResult()">📋 复制</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { convertEbook } from './ebook-converter.js';
+        
+        let lastResult = '';
+        
+        window.convert = function() {
+            const input = document.getElementById('input').value;
+            const fromFormat = document.getElementById('fromFormat').value;
+            const toFormat = document.getElementById('toFormat').value;
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const output = document.getElementById('output');
+            const stats = document.getElementById('stats');
+            
+            if (!input.trim()) {
+                alert('请输入内容！');
+                return;
+            }
+            
+            try {
+                const startTime = performance.now();
+                const result = convertEbook(input, fromFormat, toFormat, { title, author });
+                const endTime = performance.now();
+                
+                lastResult = result;
+                
+                // 显示结果
+                output.innerHTML = `<pre>${escapeHtml(result)}</pre>`;
+                
+                // 显示统计信息
+                document.getElementById('time').textContent = (endTime - startTime).toFixed(2) + ' ms';
+                document.getElementById('inputSize').textContent = (input.length / 1024).toFixed(2) + ' KB';
+                document.getElementById('outputSize').textContent = (result.length / 1024).toFixed(2) + ' KB';
+                stats.style.display = 'block';
+                
+            } catch (error) {
+                output.innerHTML = `<p style="color: red;">转换失败: ${escapeHtml(error.message)}</p>`;
+                stats.style.display = 'none';
+            }
+        };
+        
+        window.downloadResult = function() {
+            if (!lastResult) {
+                alert('请先进行转换！');
+                return;
+            }
+            
+            const toFormat = document.getElementById('toFormat').value;
+            const title = document.getElementById('title').value;
+            const blob = new Blob([lastResult], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title}.${toFormat}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
+        
+        window.copyResult = function() {
+            if (!lastResult) {
+                alert('请先进行转换！');
+                return;
+            }
+            
+            navigator.clipboard.writeText(lastResult).then(() => {
+                alert('已复制到剪贴板！');
+            }).catch(err => {
+                alert('复制失败: ' + err.message);
+            });
+        };
+        
+        window.loadExample = function(type) {
+            const input = document.getElementById('input');
+            
+            if (type === 'txt') {
+                input.value = `第一章 序言
+
+欢迎使用电子书转换器！
+这是一个轻量级的工具，证明电子书转换不需要大量资源。
+
+第二章 特性介绍
+
+本工具具有以下特性：
+1. 快速转换 - 通常只需几毫秒
+2. 零依赖 - 无需安装任何额外的库
+3. 安全可靠 - 内置 XSS 防护
+4. 支持多种格式
+
+第三章 使用说明
+
+使用非常简单：
+1. 输入文本内容
+2. 选择源格式和目标格式
+3. 点击转换按钮
+4. 下载或复制结果
+
+第四章 总结
+
+电子书转换是一个轻量级操作，适合在各种环境中使用！`;
+                document.getElementById('fromFormat').value = 'txt';
+            } else if (type === 'md') {
+                input.value = `# 电子书转换指南
+
+## 简介
+
+这是一个**轻量级**的电子书转换工具。
+
+## 主要特性
+
+- 快速转换
+- 低资源消耗
+- *零外部依赖*
+- 支持多种格式
+
+## 性能指标
+
+转换 10KB 文本通常只需 **1-5 毫秒**。
+
+## 支持的转换
+
+1. TXT → JSON
+2. TXT → HTML
+3. Markdown → HTML
+
+## 了解更多
+
+访问 [GitHub](https://github.com) 了解更多信息。
+
+---
+
+**结论**: 电子书转换程序不需要耗费大量资源！`;
+                document.getElementById('fromFormat').value = 'md';
+            }
+        };
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        // 自动转换在页面加载时
+        window.addEventListener('load', () => {
+            // 延迟一下让用户看到界面
+            setTimeout(() => {
+                convert();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
